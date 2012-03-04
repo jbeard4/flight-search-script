@@ -43,19 +43,18 @@ cat <<-EOF
 	-e | --expedia
 	-t | --travelocity
 	-s | --skyscanner
+	-a | --all : Alias for all search engines. This is the default option.
 
-
-	-c | --days-before-departure: Extra days to to look before your departure.
-	-d | --days-after-departure:  Extra days to look after your departure.
-	-m | --days-before-return: Extra days to look before your return.
-	-n | --days-after-return: Extra days to look after your return.
-	-r | --trip-duration: Length of the trip (before extra days). Default to 7 days.
+	-c | --days-before-departure: Extra days to to look before your departure. Defaults to 0.
+	-d | --days-after-departure:  Extra days to look after your departure. Defaults to 0.
+	-m | --days-before-return: Extra days to look before your return. Defaults to 0.
+	-n | --days-after-return: Extra days to look after your return. Defaults to 0. 
+	-r | --trip-duration: Length of the trip (before extra days). Default to 9 days.
 	-f | dry-run: Just print out URLs, but don't actually attempt to open them.
 
 	EXAMPLE: To look for return trip flights from Syracuse and Cape Town, lasting 9 days, leaving on Thursday or Friday, between 2012-04-06 and 2012-06-08, and returning the following Sunday (9 day duration).
 
 	./flight-search.sh -r 9 --days-before-departure 1 2012-04-06 2012-06-08 SYR CPT
-
 EOF
 }
 
