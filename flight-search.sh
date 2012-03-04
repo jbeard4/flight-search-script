@@ -1,9 +1,23 @@
 #!/bin/bash
 
+#   Copyright 2012 Jacob Beard
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 openBrowser(){
 	url="$1"
 
-	#!/bin/bash
+	#cobbled together from: http://stackoverflow.com/questions/3124556/clean-way-to-launch-the-web-browser-from-shell-script
 	if [ -x "$BROWSER" ]; then
 		"$BROWSER" "$URL" &
 	elif which gnome-open > /dev/null; then
@@ -35,6 +49,7 @@ cat <<-EOF
 	-m | --days-before-return: Extra days to look before your return.
 	-n | --days-after-return: Extra days to look after your return.
 	-r | --trip-duration: Length of the trip (before extra days). Default to 7 days.
+	-f | dry-run: Just print out URLs, but don't actually attempt to open them.
 EOF
 }
 
