@@ -5,9 +5,9 @@ lastDepartureDate=${2-"2012-06-08"}
 origin=${3-"SYR"}
 dest=${4-"CPT"}
 
+#TODO: paraemterize these
 browser="chromium-browser"
 engines=( hipmunk kayak expedia travelocity skyscanner )
-
 
 today=`date +%-j`
 firstDepartureDay=`date --date "$firstDepartureDate" +%-j`
@@ -26,11 +26,22 @@ echo daysUntilLastDepartureDate $daysUntilLastDepartureDate
 
 declare -a departDates
 declare -a returnDates
-#TODO: +- 3 days
-for((n=0,daysAhead=daysUntilFirstDepartureDate;daysAhead <= daysUntilLastDepartureDate;n++,daysAhead+=7)); do
-	departDates[$n]=`date --date="$daysAhead days" +%F`
-	returnDates[$n]=`date --date="$(($daysAhead + 9)) days" +%F`
-	echo $daysAhead ${departDates[$n]}
+#TODO: parameterize this
+departMinusDays=1
+departPlusDays=0
+returnMinusDays=0
+returnPlusDays=0
+n=0
+for baseDaysAhead in `seq $daysUntilFirstDepartureDate 7 $daysUntilLastDepartureDate`; do
+	baseReturnDaysAhead=$(($baseDaysAhead + 9))	#TODO: parameterize this
+	for departDaysAhead in `seq $(($baseDaysAhead - $departMinusDays)) $(($baseDaysAhead + $departPlusDays))`; do
+		for returnDaysAhead in `seq $(($baseReturnDaysAhead - $returnMinusDays)) $(($baseReturnDaysAhead + $returnPlusDays))`; do
+			departDates[$n]=`date --date="$departDaysAhead days" +%F`
+			returnDates[$n]=`date --date="$returnDaysAhead days" +%F`
+			echo $departDaysAhead $returnDaysAhead ${departDates[$n]} ${returnDates[$n]}
+			n=$((n + 1))
+		done;
+	done;
 done
 
 j=0
@@ -54,6 +65,7 @@ done
 
 
 for url in ${urls[*]}; do
+	#TODO: parameterize whether to run or just echo
 	#open in chromium
 	echo $url
 	$browser $url &
