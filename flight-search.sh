@@ -34,6 +34,7 @@ cat <<-EOF
 	This script opens a a number of flight search aggregators in your web browser. It is meant to allow you to see the ticket prices over a long period of time, with variable . You set the start date of your trip, the trip duration (in days), an end date, and an origin and destination. Origin and destination are airport codes (e.g. SYR for Syracuse airport).
 
 	flight-search.sh [OPTIONS] firstDepartureDate lastDepartureDate origin destination
+
 	OPTIONS are:
 
 	A number of search engines: 
@@ -50,12 +51,17 @@ cat <<-EOF
 	-n | --days-after-return: Extra days to look after your return.
 	-r | --trip-duration: Length of the trip (before extra days). Default to 7 days.
 	-f | dry-run: Just print out URLs, but don't actually attempt to open them.
+
+	EXAMPLE: To look for return trip flights from Syracuse and Cape Town, lasting 9 days, leaving on Thursday or Friday, between 2012-04-06 and 2012-06-08, and returning the following Sunday (9 day duration).
+
+	./flight-search.sh -r 9 --days-before-departure 1 2012-04-06 2012-06-08 SYR CPT
+
 EOF
 }
 
 
-TEMP=`getopt -o pketsac::d::m::n::r::fh \
---long  hipmunk,kayak,expedia,travelocity,skyscanner,all,days-before-departure::,days-after-departure::,days-before-return::,days-after-return::,trip-duration::,dry-run,"help" \
+TEMP=`getopt -o pketsac:d:m:n:r:fh \
+--long  hipmunk,kayak,expedia,travelocity,skyscanner,all,days-before-departure:,days-after-departure:,days-before-return:,days-after-return:,trip-duration:,dry-run,"help" \
 -n 'flight-search.sh' -- "$@"`
 
 if [ $? != 0 ] ; then echo "getopt failed. Terminating..." >&2 ; exit 1 ; fi
@@ -63,23 +69,22 @@ if [ $? != 0 ] ; then echo "getopt failed. Terminating..." >&2 ; exit 1 ; fi
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
-#TODO: print help as well...
-
 declare -a engines
 
 allEngines=( hipmunk kayak expedia travelocity skyscanner );
 
 while true ; do
+	echo $1
 	case "$1" in
-		p|hipmunk|k|kayak|e|expedia|t|travelocity|s|skyscanner) engines+=1; shift ;;
-		a|all) engines=( ${allEngines[*]} ); shift ;;
-		c|days-before-departure) departMinusDays=$2; shift 2 ;;
-		d|days-after-departure)  departPlusDays=$2; shift 2 ;;
-		m|days-before-return) returnMinusDays=$2; shift 2 ;;
-		n|days-after-return) returnPlusDays=$2; shift 2 ;;
-		r|trip-duration) daysToReturnAfter=$2; shift 2 ;;
-		f|dry-run) dryRun=true; shift ;;
-		h|help) printHelp; exit 1 ;;
+		-p|--hipmunk|-k|--kayak|-e|--expedia|-t|--travelocity|-s|--skyscanner) engines+=1; shift ;;
+		-a|--all) engines=( ${allEngines[*]} ); shift ;;
+		-c|--days-before-departure) departMinusDays=$2; shift 2 ;;
+		-d|--days-after-departure)  departPlusDays=$2; shift 2 ;;
+		-m|--days-before-return) returnMinusDays=$2; shift 2 ;;
+		-n|--days-after-return) returnPlusDays=$2; shift 2 ;;
+		-r|--trip-duration) daysToReturnAfter=$2; shift 2 ;;
+		-f|--dry-run) dryRun=true; shift ;;
+		-h|--help) printHelp; exit 1 ;;
 		--) shift ; break ;;
 		*) printHelp; exit 1 ;;
 	esac
